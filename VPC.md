@@ -110,3 +110,72 @@ I often configure SGs to allow traffic from other Security Groups, which simplif
 The most important point is the flow of traffic. If a rule conflicts, the NACL takes precedence.
 
 If I set an Allow rule in an EC2's Security Group, but the corresponding NACL has a Deny rule, the traffic will be dropped at the subnet boundary by the NACL and will never reach the instance. This is why you must ensure traffic is allowed at both the NACL and the Security Group level to successfully reach your application.
+
+
+🧩 Scenario 1 — Application Access Issue
+
+“You’ve deployed an application on an EC2 instance inside a private subnet. The app needs to download packages from the internet during startup, but it’s failing. How will you fix it?”
+
+💬 What the interviewer expects:
+You should say — attach a NAT Gateway or NAT Instance in a public subnet, update the route table so that instances in the private subnet can access the internet through it.
+
+🌐 Scenario 2 — SSH Access Problem
+
+“Your EC2 instance in a private subnet is not reachable via SSH from your local system. How will you connect to it?”
+
+💬 Expected answer:
+Use a Bastion Host (Jump Server) placed in a public subnet. Connect to that first, then SSH into the private instance from there.
+
+🔐 Scenario 3 — Restricting Access Between Subnets
+
+“You have web servers in public subnet and databases in private subnet. How will you make sure the web servers can talk to the DB but the internet can’t reach the DB?”
+
+💬 Expected answer:
+Use Security Groups and Route Tables —
+
+DB’s SG allows only web server’s SG.
+
+Private subnet has no route to internet gateway.
+
+🧭 Scenario 4 — Two VPCs Need Communication
+
+“You have two different VPCs in the same region and need to share data between them. How do you do that?”
+
+💬 Expected answer:
+Set up VPC Peering and update the route tables in both VPCs so that instances can communicate through private IPs.
+
+🚀 Scenario 5 — Hybrid Setup
+
+“Your company has an on-prem network and an AWS VPC. You need secure communication between both. What’s your approach?”
+
+💬 Expected answer:
+Use VPN Connection (Site-to-Site VPN) or Direct Connect depending on bandwidth and latency needs.
+
+⚙️ Scenario 6 — VPC Connectivity Issue
+
+“An EC2 in one subnet can’t reach another EC2 in a different subnet inside the same VPC. What will you check?”
+
+💬 Expected answer:
+Check:
+
+Route tables (make sure subnets can talk)
+
+Security groups and NACLs
+
+That they are in the same VPC
+
+Ping via private IPs
+
+🧱 Scenario 7 — Isolating Environments
+
+“Your company wants to separate Dev, QA, and Prod environments within AWS. How would you design that using VPCs?”
+
+💬 Expected answer:
+Create separate VPCs for each environment, or use one VPC with different subnets for each. Control access via Security Groups and IAM policies.
+
+🌉 Scenario 8 — Accessing S3 from Private Subnet
+
+“Your EC2 in a private subnet needs to access S3, but there’s no internet connection. How can you allow that securely?”
+
+💬 Expected answer:
+Use a VPC Endpoint for S3 — allows private connection without internet gateway or NAT.

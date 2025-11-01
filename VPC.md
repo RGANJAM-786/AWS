@@ -85,4 +85,28 @@ In contrast, a Network Access Control List (NACL) operates at the subnet level, 
 The Overlap and the Practical Test
 The video emphasizes that the NACL acts as a powerful override to the Security Group. In the practical demonstration, an application was running on a specific port (8000) on an EC2 instance. When the instructor explicitly Allowed that port in the instance's Security Group but simultaneously added a Deny rule for the same port in the subnet's NACL, the traffic was completely blocked. This confirms that the NACL acts as the first filter at the boundary of the subnet, preventing the traffic from ever reaching the Security Group of the instance.
 
-🛡️ Interview Answer: Security Group vs. NACLThe fundamental difference between a Security Group (SG) and a Network Access Control List (NACL) comes down to where they apply, how they process rules, and the kind of traffic they allow.1. Key DifferencesFeatureSecurity Group (SG)Network ACL (NACL)Scope (Where Applied)Instance Level (Applies to a single EC2 instance)Subnet Level (Applies to all resources in a subnet)Rules TypeAllow rules only. No explicit Deny.Allow and Deny rules.Rule ProcessingProcesses all rules before making a decision.Processes rules in order (lowest number first).NatureStateful (Inbound rule automatically allows return outbound traffic).Stateless (Must explicitly allow both inbound and outbound traffic).2. Practical Use Case and PriorityIn a real-world scenario, you use them together, but they serve different purposes and have a clear hierarchy:NACLs are the First Line of Defense .As an administrator, I use NACLs for broad, organizational security policies. For instance, if my company has a strict rule against using a specific port (like an insecure database port) across all environments, I apply a Deny rule in the NACL. This blocks the traffic for the entire subnet immediately.This is an excellent safety net against human error because the NACL checks traffic before it even reaches the instance.Security Groups are the Last Line of Defense .I use SGs for fine-grained, instance-specific access. If a web server needs port 80 and a separate database server needs port 3306, I define those specific allow rules in their respective Security Groups.I often configure SGs to allow traffic from other Security Groups, which simplifies rules by creating a "group of trusted servers" rather than managing hundreds of IP addresses.3. The Interview Takeaway (The Overlap)The most important point is the flow of traffic. If a rule conflicts, the NACL takes precedence.If I set an Allow rule in an EC2's Security Group, but the corresponding NACL has a Deny rule, the traffic will be dropped at the subnet boundary by the NACL and will never reach the instance. This is why you must ensure traffic is allowed at both the NACL and the Security Group level to successfully reach your application.
+
+<img width="971" height="595" alt="image" src="https://github.com/user-attachments/assets/0e3d0afd-d451-4817-b4cc-e02fc7cd0d1a" />
+
+
+. Practical Use Case and Priority
+
+
+In a real-world scenario, you use them together, but they serve different purposes and have a clear hierarchy:
+
+NACLs are the First Line of Defense .
+
+As an administrator, I use NACLs for broad, organizational security policies. For instance, if my company has a strict rule against using a specific port (like an insecure database port) across all environments, I apply a Deny rule in the NACL. This blocks the traffic for the entire subnet immediately.
+
+This is an excellent safety net against human error because the NACL checks traffic before it even reaches the instance.
+
+Security Groups are the Last Line of Defense .
+
+I use SGs for fine-grained, instance-specific access. If a web server needs port 80 and a separate database server needs port 3306, I define those specific allow rules in their respective Security Groups.
+
+I often configure SGs to allow traffic from other Security Groups, which simplifies rules by creating a "group of trusted servers" rather than managing hundreds of IP addresses.
+
+3. The Interview Takeaway (The Overlap)
+The most important point is the flow of traffic. If a rule conflicts, the NACL takes precedence.
+
+If I set an Allow rule in an EC2's Security Group, but the corresponding NACL has a Deny rule, the traffic will be dropped at the subnet boundary by the NACL and will never reach the instance. This is why you must ensure traffic is allowed at both the NACL and the Security Group level to successfully reach your application.
